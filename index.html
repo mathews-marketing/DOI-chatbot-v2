@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Done In One Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = {
+
+        corePlugins: {
+
+            preflight: false, // CRITICAL: Prevents CSS bleeding onto the parent website
+
+        },
+
+        theme: {
+
+            extend: {
+
+                fontFamily: {
+
+                    sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+
+                },
+
+                colors: {
+
+                    premium: {
+
+                        50: '#f8fafc',
+
+                        100: '#f1f5f9',
+
+                        200: '#e2e8f0',
+
+                        800: '#23323e', 
+
+                        900: '#304454', // Primary Dark Slate
+
+                        950: '#1b2731',
+
+                    },
+
+                    accent: {
+
+                        400: '#cbe073',
+
+                        500: '#bace5f', // Primary Lime/Olive
+
+                        600: '#a3b64c',
+
+                    }
+
+                },
+
+                boxShadow: {
+
+                    'elegant': '0px 30px 60px -15px rgba(0, 0, 0, 0.4), 0px 10px 30px -5px rgba(0, 0, 0, 0.2)',
+
+                    'trigger': '0px 15px 35px -5px rgba(48, 68, 84, 0.25)',
+
+                    'card': '0px 4px 20px -2px rgba(0, 0, 0, 0.05)',
+
+                }
+
+            }
+
+        }
+
+    }</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; }
+#archie-widget-container { bottom: 16px !important; left: 16px !important; }
+#widget-panel { width: min(340px, calc(100vw - 32px)) !important; height: min(580px, calc(100dvh - 110px)) !important; }
+
+
+    /* Refined Entrance Animations */
+
+    @keyframes smoothSpringUp {
+
+        0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+
+    }
+
+    @keyframes smoothSpringDown {
+
+        0% { opacity: 1; transform: translateY(0) scale(1); }
+
+        100% { opacity: 0; transform: translateY(15px) scale(0.98); visibility: hidden; }
+
+    }
+
+    @keyframes slideInUp {
+
+        0% { opacity: 0; transform: translateY(10px); }
+
+        100% { opacity: 1; transform: translateY(0); }
+
+    }
+
+    @keyframes pulse-dot {
+
+        0% { box-shadow: 0 0 0 0 rgba(186, 206, 95, 0.6); }
+
+        70% { box-shadow: 0 0 0 6px rgba(186, 206, 95, 0); }
+
+        100% { box-shadow: 0 0 0 0 rgba(186, 206, 95, 0); }
+
+    }
+
+    @keyframes bounceAttention {
+
+        0%, 100% { transform: translateY(0); }
+
+        50% { transform: translateY(-12px); }
+
+    }
+
+    @keyframes gentleBounce {
+
+        0%, 100% { transform: translateY(0); }
+
+        50% { transform: translateY(-4px); }
+
+    }
+
+    .typing-dots { display: flex; gap: 4px; padding: 6px 4px; }
+
+    .typing-dots span { width: 6px; height: 6px; background-color: #94a3b8; border-radius: 50%; animation: typingBounce 1.4s infinite ease-in-out both; }
+
+    .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+
+    .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typingBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+    .widget-hidden {
+
+        pointer-events: none;
+
+        animation: smoothSpringDown 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+
+    }
+
+    .widget-visible {
+
+        pointer-events: auto;
+
+        animation: smoothSpringUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+    }
+
+    .animate-message {
+
+        animation: slideInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+    }
+
+    .status-dot {
+
+        animation: pulse-dot 2s infinite;
+
+    }
+
+    .animate-attention {
+
+        animation: bounceAttention 0.4s ease-in-out 2;
+
+    }
+
+    .animate-gentle-bounce {
+
+        animation: gentleBounce 1.5s ease-in-out infinite;
+
+    }
+
+    /* Minimalist Scrollbar */
+
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
+    /* Hidden Scrollbar for Horizontal Carousels */
+
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* High-end Form Inputs & Chips */
+
+    .chat-input-field {
+
+        width: 100%;
+
+        padding: 12px 16px;
+
+        border-radius: 10px;
+
+        background-color: #f8fafc;
+
+        border: 1px solid #e2e8f0;
+
+        font-size: 14px;
+
+        color: #304454;
+
+        margin-bottom: 12px;
+
+        outline: none;
+
+        transition: all 0.2s ease;
+
+    }
+
+    .chat-input-field:focus {
+
+        background-color: #ffffff;
+
+        border-color: #304454;
+
+        box-shadow: 0 0 0 3px rgba(48, 68, 84, 0.1);
+
+    }
+
+    .chat-input-field::placeholder { color: #94a3b8; }
+
+    select.chat-input-field {
+
+        appearance: none;
+
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%2364748b" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+
+        background-repeat: no-repeat;
+
+        background-position: right 12px center;
+
+        background-size: 20px;
+
+        padding-right: 36px;
+
+    }
+
+    .chip-input:checked + .chip-label {
+
+        background-color: #304454;
+
+        color: white;
+
+        border-color: #304454;
+
+    }
+
+    /* ==================================================== */
+
+    /* WORDPRESS THEME OVERRIDE PROTECTIONS                 */
+
+    /* ==================================================== */
+
+    #archie-widget-container * { box-sizing: border-box; }
+
+    #archie-widget-container button { outline: none !important; cursor: pointer; }
+
+    #archie-widget-container button.border-slate-200 { border-color: #e2e8f0 !important; border-width: 1px !important; border-style: solid !important; }
+
+    #archie-widget-container button.border-accent-600\/30 { border-color: rgba(163, 182, 76, 0.3) !important; border-width: 1px !important; border-style: solid !important; }
+
+    /* 1. Protect the Back Button */
+
+    #archie-widget-container #nav-back-btn:hover {
+
+        background-color: transparent !important;
+
+        color: #304454 !important;
+
+    }
+
+    /* 2, 4, 5. Protect Chat Options (Location, Interest, Best Time) */
+
+    #archie-widget-container #chat-history button.bg-white:hover {
+
+        background-color: #f8fafc !important; 
+
+        color: #304454 !important;            
+
+        border-color: rgba(48, 68, 84, 0.3) !important;
+
+    }
+
+    /* Protect the secondary Bento button and text */
+
+    #archie-widget-container #bento-view button.bg-white:hover {
+
+        background-color: #f8fafc !important; 
+
+        color: #304454 !important;
+
+    }
+
+    #archie-widget-container #bento-view button.bg-white:hover * {
+
+        color: inherit !important; 
+
+    }
+
+    #archie-widget-container #bento-view button.bg-white:hover span.text-slate-500 {
+
+        color: #64748b !important; 
+
+    }
+
+    #archie-widget-container #ask-question-feature {
+        border: 2px solid #bace5f !important;
+        box-shadow: 0 0 0 3px rgba(186, 206, 95, 0.14), 0 4px 16px rgba(48, 68, 84, 0.07);
+    }
+
+    #archie-widget-container #ask-question-feature:hover {
+        border-color: #a3b64c !important;
+        box-shadow: 0 0 0 4px rgba(186, 206, 95, 0.23), 0 7px 20px rgba(48, 68, 84, 0.10);
+    }
+
+    /* Protect 4 Bento Grid Sub-Buttons */
+
+    #archie-widget-container #bento-view .grid button:hover {
+
+        background-color: #f8fafc !important; 
+
+    }
+
+    #archie-widget-container #bento-view .grid button:hover span,
+
+    #archie-widget-container #bento-view .grid button:hover i {
+
+        color: #304454 !important;
+
+    }
+
+    /* 6. Protect Accent Colored Buttons */
+
+    #archie-widget-container button.bg-accent-500:hover {
+
+        background-color: #a3b64c !important; 
+
+        color: #304454 !important;
+
+    }
+
+    /* Protect Primary Dark Buttons */
+
+    #archie-widget-container button.bg-premium-900:hover {
+
+        background-color: #23323e !important; 
+
+        color: #ffffff !important;
+
+    }
+
+    #archie-widget-container button.bg-premium-900:hover * {
+
+        color: inherit !important;
+
+    }
+
+    #archie-widget-container button.bg-premium-900:hover span.text-slate-300 {
+
+        color: #cbd5e1 !important; 
+
+    }
+
+    /* Protect the Chat Submit Icon Button */
+
+    #archie-widget-container #live-chat-submit:hover {
+
+        background-color: #23323e !important;
+
+        color: #ffffff !important;
+
+    }
+
+
+</style>
+</head>
+<body>
+<!-- WIDGET CONTAINER (Positioned Bottom Left) -->
+
+<div id="archie-widget-container" class="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-[99999] flex flex-col items-start antialiased font-sans" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+
+    <!-- WIDGET PANEL (Uses inline style display:none to bypass GHL overrides) -->
+
+    <div id="widget-panel" class="relative w-[calc(100vw-2rem)] sm:w-[340px] h-[580px] bg-white rounded-[20px] mb-4 shadow-elegant border border-slate-200 origin-bottom-left flex-col overflow-hidden text-[#304454]" style="display: none;">
+
+        <!-- VIEW 1: BENTO MENU (The "Start" Screen) -->
+
+        <div id="bento-view" class="absolute inset-0 flex flex-col w-full h-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] opacity-100 translate-x-0 bg-white">
+
+            <!-- Sleek Header (Flat Lime) -->
+
+            <div class="h-[72px] px-5 flex justify-between items-center bg-accent-500 relative z-10 overflow-hidden shrink-0">
+
+                <div class="flex items-center gap-4 relative z-10">
+
+                    <div class="relative shrink-0">
+
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-md bg-white" style="background-color: white !important;">
+
+                            <img src="https://assets.cdn.filesafe.space/QxqsOC7AbRmImFQOw9qw/media/6a359db572754a77aa69ff98.png" alt="Archie - AI Assistant" class="w-full h-full object-cover">
+
+                        </div>
+
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full status-dot"></span>
+
+                    </div>
+
+                    <div>
+
+                        <h3 class="text-premium-900 text-[17px] font-bold tracking-tight leading-none mb-1.5 m-0">Hi, I'm Archie</h3>
+
+                        <p class="text-premium-900/80 text-[12.5px] font-medium leading-none m-0">Online • Ready to help</p>
+
+                    </div>
+
+                </div>
+
+                <button onclick="window.toggleWidget()" class="text-premium-900/60 hover:text-premium-900 transition-colors hover:bg-premium-900/10 rounded-full p-2 shrink-0 active:scale-95 border-none outline-none focus:outline-none ring-0 bg-transparent m-0 cursor-pointer" style="border: none !important;">
+
+                    <i data-lucide="x" class="w-5 h-5"></i>
+
+                </button>
+
+            </div>
+
+            <!-- Content Area -->
+
+            <div class="p-5 flex flex-col gap-3 bg-[#FAFAFA] flex-1 overflow-y-auto custom-scrollbar">
+
+                <div id="welcome-bubble" class="bg-white border border-slate-100 shadow-card rounded-2xl rounded-tl-sm p-4 text-[13.5px] text-slate-600 leading-relaxed font-medium m-0">
+
+                    Hi! I'm Archie. I can answer your questions about Done In One. Tap Ask Archie a Question below.
+
+                </div>
+
+                <button onclick="window.appBot.startFlow('consult')" class="w-full bg-premium-900 text-white px-4 py-4 rounded-2xl flex items-center justify-between hover:bg-premium-800 transition-all duration-300 shadow-card group hover:-translate-y-0.5 active:scale-[0.98] border-none m-0 text-left cursor-pointer">
+
+                    <div class="flex items-center gap-4 w-[85%] overflow-hidden">
+
+                        <div class="bg-white/10 text-white p-2.5 rounded-xl shrink-0 group-hover:bg-white/20 transition-colors duration-300">
+
+                            <i data-lucide="calendar-check" class="w-5 h-5"></i>
+
+                        </div>
+
+                        <div class="text-left w-full overflow-hidden flex flex-col justify-center">
+
+                            <span class="block font-bold text-[15px] mb-0.5 tracking-tight truncate w-full text-white">Schedule Free Consult</span>
+
+                            <span class="block text-slate-300 text-[11px] font-medium tracking-wide truncate w-full uppercase">Includes 3D Scan & Exam</span>
+
+                        </div>
+
+                    </div>
+
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0"></i>
+
+                </button>
+
+                <button id="ask-question-feature" onclick="window.appBot.startFlow('question')" class="w-full bg-white text-premium-900 px-4 py-4 rounded-2xl flex items-center justify-between hover:bg-slate-50 transition-all duration-300 shadow-sm border border-slate-200 group hover:-translate-y-0.5 active:scale-[0.98] text-left m-0 cursor-pointer">
+
+                    <div class="flex items-center gap-4 w-[85%] overflow-hidden">
+
+                        <div class="bg-accent-500/20 text-premium-900 p-2.5 rounded-xl shrink-0">
+
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+
+                        </div>
+
+                        <div class="text-left w-full overflow-hidden flex flex-col justify-center">
+
+                            <span class="block font-bold text-[15px] mb-0.5 tracking-tight truncate w-full">Ask Archie a Question</span>
+
+                            <span class="block text-slate-500 text-[11px] font-medium tracking-wide truncate w-full">Get answers about Done In One</span>
+
+                        </div>
+
+                    </div>
+
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:text-premium-900 group-hover:translate-x-1 transition-all shrink-0"></i>
+
+                </button>
+
+                <div class="grid grid-cols-2 gap-2 mt-1 m-0">
+
+                    <button onclick="window.appBot.startFlow('cost')" class="flex items-center gap-2 py-3.5 px-2.5 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:bg-slate-50 hover:border-premium-900/30 transition-all duration-200 group active:scale-95 m-0 cursor-pointer text-left">
+
+                        <i data-lucide="credit-card" class="w-[16px] h-[16px] text-slate-400 group-hover:text-premium-900 transition-colors shrink-0"></i>
+
+                        <span class="text-[11.5px] font-semibold text-slate-700 group-hover:text-premium-900 transition-colors leading-tight tracking-tight block">Pricing Details</span>
+
+                    </button>
+
+                    <button onclick="window.appBot.startFlow('process')" class="flex items-center gap-2 py-3.5 px-2.5 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:bg-slate-50 hover:border-premium-900/30 transition-all duration-200 group active:scale-95 m-0 cursor-pointer text-left">
+
+                        <i data-lucide="clock" class="w-[16px] h-[16px] text-slate-400 group-hover:text-premium-900 transition-colors shrink-0"></i>
+
+                        <span class="text-[11.5px] font-semibold text-slate-700 group-hover:text-premium-900 transition-colors leading-tight tracking-tight block">1-Week Process</span>
+
+                    </button>
+
+                    <button onclick="window.appBot.startFlow('consult')" class="flex items-center gap-2 py-3.5 px-2.5 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:bg-slate-50 hover:border-premium-900/30 transition-all duration-200 group active:scale-95 m-0 cursor-pointer text-left">
+
+                        <i data-lucide="circle-help" class="w-[16px] h-[16px] text-slate-400 group-hover:text-premium-900 transition-colors shrink-0"></i>
+
+                        <span class="text-[11.5px] font-semibold text-slate-700 group-hover:text-premium-900 transition-colors leading-tight tracking-tight block">Am I a Candidate?</span>
+
+                    </button>
+
+                    <button onclick="window.appBot.startFlow('reviews')" class="flex items-center gap-2 py-3.5 px-2.5 rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:bg-slate-50 hover:border-premium-900/30 transition-all duration-200 group active:scale-95 m-0 cursor-pointer text-left">
+
+                        <i data-lucide="star" class="w-[16px] h-[16px] text-slate-400 group-hover:text-premium-900 transition-colors shrink-0"></i>
+
+                        <span class="text-[11.5px] font-semibold text-slate-700 group-hover:text-premium-900 transition-colors leading-tight tracking-tight block">Patient Reviews</span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="bg-white p-3.5 border-t border-slate-100 flex items-center justify-center gap-2 shrink-0 m-0">
+
+                <i data-lucide="shield-check" class="w-4 h-4 text-accent-500"></i>
+
+                <span class="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Over 6,000 Cases Completed</span>
+
+            </div>
+
+        </div>
+
+        <!-- VIEW 2: CHAT LEAD FLOW INTERFACE -->
+
+        <div id="chat-view" class="absolute inset-0 flex flex-col w-full h-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] opacity-0 translate-x-full pointer-events-none bg-white z-10">
+
+            <div class="h-[72px] px-5 flex items-center justify-between bg-accent-500 relative z-10 overflow-hidden shrink-0 m-0">
+
+                <div class="flex items-center gap-4 relative z-10">
+
+                    <div class="relative shrink-0">
+
+                        <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-md bg-white" style="background-color: white !important;">
+
+                            <img src="https://assets.cdn.filesafe.space/QxqsOC7AbRmImFQOw9qw/media/6a359db572754a77aa69ff98.png" alt="Archie" class="w-full h-full object-cover">
+
+                        </div>
+
+                        <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full status-dot"></span>
+
+                    </div>
+
+                    <div>
+
+                        <h4 id="chat-header-title" class="text-[17px] font-bold text-premium-900 leading-none mb-1.5 m-0">Free Consultation</h4>
+
+                        <span class="text-[12.5px] text-premium-900/80 font-medium leading-none block">Online • Ready to help</span>
+
+                    </div>
+
+                </div>
+
+                <button onclick="window.toggleWidget()" class="text-premium-900/60 hover:text-premium-900 transition-colors p-1.5 rounded-lg hover:bg-premium-900/10 active:scale-90 relative z-10 border-none outline-none focus:outline-none ring-0 bg-transparent m-0 cursor-pointer" style="border: none !important;">
+
+                    <i data-lucide="x" class="w-5 h-5"></i>
+
+                </button>
+
+            </div>
+
+            <div id="chat-nav" class="px-5 pt-4 pb-2 bg-[#FAFAFA] flex justify-between items-center shrink-0 border-b border-slate-100/50 m-0">
+
+                <button id="nav-back-btn" onclick="window.appBot.goBack()" class="flex items-center gap-1.5 text-[13px] font-bold text-slate-500 hover:text-premium-900 transition-colors active:scale-95 border-none outline-none focus:outline-none ring-0 m-0 cursor-pointer" style="border: none !important; background: transparent !important;">
+
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
+
+                </button>
+
+                <span id="step-indicator" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-slate-200/50 px-2.5 py-1 rounded-full">Step 1 of 2</span>
+
+            </div>
+
+            <div id="chat-history" class="flex-1 overflow-y-auto overflow-x-hidden p-5 pt-4 flex flex-col gap-4 bg-[#FAFAFA] custom-scrollbar pb-6 relative m-0">
+
+                <!-- Dynamic content gets injected here -->
+
+            </div>
+
+            <button id="scroll-down-btn" onclick="document.getElementById('chat-history').scrollTo({top: document.getElementById('chat-history').scrollHeight, behavior: 'smooth'})" class="absolute bottom-[90px] left-2 bg-premium-900 text-white border border-premium-800 rounded-full w-8 h-8 shadow-md hover:bg-premium-800 transition-all z-20 animate-gentle-bounce flex items-center justify-center active:scale-95 cursor-pointer hover:shadow-lg m-0" style="display: none !important; border: none !important;">
+
+                <i data-lucide="arrow-down" class="w-4 h-4"></i>
+
+            </button>
+
+            <div id="chat-input-area" class="p-3 bg-white border-t border-slate-100 shrink-0 flex-col gap-2 m-0" style="display: none !important;">
+
+                <button onclick="window.appBot.startFlow('consult')" class="w-full bg-accent-500 text-premium-900 border border-accent-600/30 hover:bg-accent-600 py-2.5 rounded-xl text-[13px] font-bold transition-all shadow-sm active:scale-95 flex items-center justify-center gap-2 m-0 cursor-pointer">
+
+                    <i data-lucide="calendar-check" class="w-4 h-4"></i> Schedule a Free Consult
+
+                </button>
+
+                <form onsubmit="event.preventDefault(); window.appBot.handleChatSend();" class="relative flex items-center m-0 p-0">
+
+                    <input type="text" id="live-chat-input" placeholder="Type your message..." autocomplete="off" class="w-full bg-slate-50 border border-slate-200 text-[14px] rounded-full py-3 pl-4 pr-12 focus:outline-none focus:border-premium-900/50 focus:ring-2 focus:ring-premium-900/10 transition-all text-slate-700 placeholder-slate-400">
+
+                    <button id="live-chat-submit" type="submit" class="absolute right-1.5 p-2 bg-premium-900 text-white rounded-full hover:bg-premium-800 hover:scale-105 active:scale-95 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center m-0 cursor-pointer" style="border: none !important;">
+
+                        <i data-lucide="send" class="w-4 h-4 ml-0.5 mt-0.5"></i>
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div id="hipaa-footer" class="p-3 bg-white border-t border-slate-100 text-center shrink-0 m-0">
+
+                <p class="text-[10px] text-slate-400 font-bold tracking-widest uppercase flex items-center justify-center gap-1.5 m-0">
+
+                    <i data-lucide="lock" class="w-3 h-3"></i> HIPAA Compliant Portal
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FLOATING TRIGGER AREA -->
+
+    <div class="flex items-end gap-3 z-50">
+
+        <button id="trigger-btn" type="button" onclick="window.toggleWidget()" class="hover:scale-105 active:scale-95 transition-all duration-300 m-0 p-0" style="width: 54px; height: 54px; border-radius: 50%; border: none !important; background: transparent !important; position: relative; cursor: pointer; flex-shrink: 0; box-shadow: 0px 15px 35px -5px rgba(48,68,84,0.25);">
+
+            <div id="icon-default" style="width: 54px; height: 54px; border-radius: 50%; overflow: hidden; border: 3px solid white; background-color: white; position: absolute; top: 0; left: 0; display: block;">
+
+                <img src="https://assets.cdn.filesafe.space/QxqsOC7AbRmImFQOw9qw/media/6a359db572754a77aa69ff98.png" alt="Chat with us" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%;">
+
+            </div>
+
+            <div id="icon-active" style="display: none; width: 54px; height: 54px; border-radius: 50%; background-color: #304454 !important; position: absolute; top: 0; left: 0; align-items: center; justify-content: center; border: 2px solid #304454;">
+
+                <i data-lucide="x" style="width: 24px; height: 24px; color: white;"></i>
+
+            </div>
+
+            <span id="trigger-dot" class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-accent-500 border-2 border-white rounded-full status-dot z-10"></span>
+
+            <span id="notification-badge" style="display: none;" class="absolute -top-1 -right-1 h-4 w-4 items-center justify-center rounded-full bg-accent-500 text-[10px] font-bold text-premium-900 shadow-sm opacity-0 scale-0 transition-all duration-300 z-10 border border-white">1</span>
+
+        </button>
+
+        <div id="trigger-bubble" onclick="window.toggleWidget()" style="display: none;" class="opacity-0 scale-95 translate-y-3 pointer-events-none bg-white px-4 py-3 rounded-2xl rounded-bl-sm shadow-elegant border border-slate-100 cursor-pointer hover:-translate-y-1 transition-all duration-300 relative max-w-[180px]">
+
+            <span id="trigger-text" class="text-[13px] font-bold text-premium-900 tracking-tight leading-snug block m-0">Have questions? We’re online and happy to help</span>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+// Wait briefly for the host context before initializing the chatbot.
+// A fresh URL avoids a stale chatbot.js after a GitHub Pages deployment.
+(function () {
+  let started = false;
+  let expectedHostOrigin = '';
+  try { expectedHostOrigin = new URL(document.referrer).origin; } catch (_) {}
+  function start(context) {
+    if (started) return;
+    started = true;
+    if (context) window.__archieHostContext = context;
+    const botScript = document.createElement('script');
+    botScript.src = new URL('./chatbot.js?v=' + Date.now(), location.href).href;
+    document.body.appendChild(botScript);
+  }
+  window.addEventListener('message', function (event) {
+    if (event.source === window.parent && event.data?.type === 'archie-host-context' &&
+        (!expectedHostOrigin || event.origin === expectedHostOrigin)) start(event.data);
+  });
+  if (window.parent === window) start();
+  else {
+    window.parent.postMessage({ type: 'archie-widget-ready' }, expectedHostOrigin || '*');
+    setTimeout(() => start(), 1500);
+  }
+})();
+</script>
+</body>
+</html>

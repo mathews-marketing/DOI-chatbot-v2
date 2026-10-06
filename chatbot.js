@@ -553,7 +553,7 @@ function createAttributionCollector() {
 
                 await appendBotMessageWithTyping("Perfect. Tell us how to reach you and our team will contact you to confirm your consultation time.", 1200); await wait(800);
 
-                chatHistory.insertAdjacentHTML('beforeend', `<div class="flex flex-col items-center w-full animate-message mt-3 shrink-0" id="consult-form-4"><form onsubmit="event.preventDefault(); window.appBot.submitConsult(this);" class="w-full bg-white border border-slate-100 p-4 rounded-2xl shadow-card m-0"><input type="text" name="name" placeholder="Full Name" required class="chat-input-field" value="${savedName || ''}"/><input type="tel" name="phone" placeholder="Phone Number" required class="chat-input-field"/><input type="email" name="email" placeholder="Email Address (Optional)" class="chat-input-field !mb-2"/><div class="text-[10.5px] text-slate-500 text-center leading-tight mb-4 mt-2">By submitting this form, you consent to receive text messages and promotional offers. Msg & data rates may apply.</div><button type="submit" class="w-full bg-premium-900 text-white font-bold py-3.5 rounded-xl hover:bg-premium-800 transition-colors active:scale-95 border-none outline-none focus:outline-none cursor-pointer m-0" style="border: none !important;">Check My Eligibility</button></form></div>`);
+                chatHistory.insertAdjacentHTML('beforeend', `<div class="flex flex-col items-center w-full animate-message mt-3 shrink-0" id="consult-form-4"><form onsubmit="event.preventDefault(); window.appBot.submitConsult(this);" class="w-full bg-white border border-slate-100 p-4 rounded-2xl shadow-card m-0"><input type="text" name="name" placeholder="Full Name" required class="chat-input-field" value="${savedName || ''}"/><input type="tel" name="phone" placeholder="Phone Number" required class="chat-input-field"/><input type="email" name="email" placeholder="Email Address" required class="chat-input-field !mb-2"/><div class="text-[10.5px] text-slate-500 text-center leading-tight mb-4 mt-2">By submitting this form, you consent to receive text messages and promotional offers. Msg & data rates may apply.</div><button type="submit" class="w-full bg-premium-900 text-white font-bold py-3.5 rounded-xl hover:bg-premium-800 transition-colors active:scale-95 border-none outline-none focus:outline-none cursor-pointer m-0" style="border: none !important;">Check My Eligibility</button></form></div>`);
 
                 if (typeof lucide !== 'undefined' && lucide.createIcons) { lucide.createIcons(); }
 
@@ -595,7 +595,7 @@ function createAttributionCollector() {
 
                 await appendBotMessageWithTyping("Thanks for sharing. Our team can review your answers and talk through whether Done In One may be right for you. How can we reach you?", 1500); await wait(800);
 
-                chatHistory.insertAdjacentHTML('beforeend', `<div class="flex flex-col items-center w-full animate-message mt-3 shrink-0" id="candidate-form-2"><form onsubmit="event.preventDefault(); window.appBot.submitCandidate(this);" class="w-full bg-white border border-slate-100 p-4 rounded-2xl shadow-card m-0"><input type="text" name="name" placeholder="Full Name" required class="chat-input-field" value="${savedName || ''}"/><input type="tel" name="phone" placeholder="Phone Number" required class="chat-input-field"/><button type="submit" class="w-full bg-accent-500 text-premium-900 font-bold py-3.5 rounded-xl hover:bg-accent-400 transition-colors active:scale-95 mt-2 border-none outline-none focus:outline-none cursor-pointer m-0" style="border: none !important;">Request a Follow-Up</button></form></div>`);
+                chatHistory.insertAdjacentHTML('beforeend', `<div class="flex flex-col items-center w-full animate-message mt-3 shrink-0" id="candidate-form-2"><form onsubmit="event.preventDefault(); window.appBot.submitCandidate(this);" class="w-full bg-white border border-slate-100 p-4 rounded-2xl shadow-card m-0"><input type="text" name="name" placeholder="Full Name" required class="chat-input-field" value="${savedName || ''}"/><input type="tel" name="phone" placeholder="Phone Number" required class="chat-input-field"/><input type="email" name="email" placeholder="Email Address" required class="chat-input-field !mb-2"/><button type="submit" class="w-full bg-accent-500 text-premium-900 font-bold py-3.5 rounded-xl hover:bg-accent-400 transition-colors active:scale-95 mt-2 border-none outline-none focus:outline-none cursor-pointer m-0" style="border: none !important;">Request a Follow-Up</button></form></div>`);
 
                 if (typeof lucide !== 'undefined' && lucide.createIcons) { lucide.createIcons(); }
 
@@ -717,9 +717,11 @@ function createAttributionCollector() {
 
             submitConsult: async function(form) {
 
+                if (!form.reportValidity()) return;
+
                 const fd = new FormData(form); const state = window.implantBotState.consult; const payload = this.getBasePayload('Consultation Request');
 
-                payload.interest = state.interest; payload.location = state.location; payload.best_time = state.best_time; payload.name = fd.get('name') || ''; payload.phone = fd.get('phone') || ''; payload.email = fd.get('email') || '';
+                payload.interest = state.interest; payload.location = state.location; payload.best_time = state.best_time; payload.name = fd.get('name') || ''; payload.phone = fd.get('phone') || ''; payload.email = String(fd.get('email') || '').trim();
 
                 if (payload.name) storage.setItem('implantBotName', payload.name); form.parentElement.remove(); appendUserMessage(`${payload.name} • ${payload.phone}`); await this.processSubmission(payload, 'Consultation Request');
 
@@ -727,9 +729,11 @@ function createAttributionCollector() {
 
             submitCandidate: async function(form) {
 
+                if (!form.reportValidity()) return;
+
                 const fd = new FormData(form); const state = window.implantBotState.candidate; const payload = this.getBasePayload('Candidate Quiz Lead');
 
-                payload.current_state = state.current_state; payload.timeframe = state.timeframe; payload.name = fd.get('name') || ''; payload.phone = fd.get('phone') || '';
+                payload.current_state = state.current_state; payload.timeframe = state.timeframe; payload.name = fd.get('name') || ''; payload.phone = fd.get('phone') || ''; payload.email = String(fd.get('email') || '').trim();
 
                 if (payload.name) storage.setItem('implantBotName', payload.name); document.getElementById('candidate-form-2').remove(); appendUserMessage(`${payload.name} • ${payload.phone}`); await this.processSubmission(payload, 'Candidate Quiz');
 
